@@ -13,7 +13,7 @@ export class Tab1Page {
     public taxa = 0.0652;
     public matrizSemIR = [];
     public matrizComIR = [];
-    public valorI = 0;
+    public valorNovo = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
 
@@ -24,19 +24,19 @@ export class Tab1Page {
 
             for (let i = 1; i < f.value.tempo - j; i++) {
                 if (i === 1) {
-                    this.valorI = f.value.parcelas + (f.value.parcelas * (this.taxa / 12))
+                    this.valorNovo = f.value.parcelas + (f.value.parcelas * (this.taxa / 12))
                 } else {
-                    this.valorI = this.valorI + (this.valorI * (this.taxa / 12))
+                    this.valorNovo = this.valorNovo + (this.valorNovo * (this.taxa / 12))
                 }
             }
 
 
             if (j === f.value.tempo - 1) {
-                this.valorI = f.value.parcelas
+                this.valorNovo = f.value.parcelas
             }
 
-            this.matrizSemIR[j] = this.valorI
-            this.valorI = 0
+            this.matrizSemIR[j] = this.valorNovo
+            this.valorNovo = 0
 
             await Promise.resolve(j);
         }
