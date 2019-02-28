@@ -6,15 +6,15 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <ion-card>
+<ion-content color="shade">
+    <ion-card color="light">
         <ion-card-header>
             <ion-card-subtitle>Tesouro SELIC</ion-card-subtitle>
         </ion-card-header>
 
         <ion-card-content>
             <form (ngSubmit)="onSubmit(f)" #f="ngForm">
-                <ion-item>
+                <ion-item color="light">
                     <ion-label position="stacked">Investimento Mensal</ion-label>
                     <ion-input placeholder="Quanto pretende investir mensalmente?" type="tel" [(ngModel)]="parcelas" name="parcelas"></ion-input>
                 </ion-item>
@@ -26,8 +26,8 @@
                     <ion-label position="stacked">Taxa Imposto de Renda</ion-label>
                     <ion-input placeholder="Taxa do Imposto de Renda" type="tel" [(ngModel)]="ir" name="ir"></ion-input>
                 </ion-item> -->
-                <ion-item>
-                    <ion-label position="stacked">Tempo Investindo</ion-label>
+                <ion-item color="light">
+                    <ion-label position="stacked">Tempo Investindo (em meses)</ion-label>
                     <ion-input placeholder="Por quanto tempo quer investir esse valor? Em meses" type="tel" [(ngModel)]="tempo" name="tempo"></ion-input>
                 </ion-item>
                     <ion-button type="submit" color="primary" class="btn-full">Simular!</ion-button>

@@ -1,28 +1,28 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Tab Two
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>
+            Tab Two
+        </ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ng-container *ngIf="dataInfo; else elseTemplate">
-    <ion-content>
+    <ion-content color="medium">
 
         <ion-card>
-          <ion-card-header>
-            <ion-card-subtitle>Tesouro Selic</ion-card-subtitle>
-          </ion-card-header>
-      
-          <ion-card-content>
-            Investimento Total: {{dataInfo[0] | currency:"BRL":true:"1.2"}}
-            <p>Total Bruto: {{dataInfo[0] + dataInfo[1] | currency:"BRL":true:"1.2"}}</p>
-            <p>Total Líquido: {{dataInfo[0] + dataInfo[2] | currency:"BRL":true:"1.2"}}</p>
-          </ion-card-content>
+            <ion-card-header>
+                <ion-card-subtitle>Tesouro Selic</ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content>
+                Investimento Total: {{dataInfo[0] | currency:"BRL":true:"1.2"}}
+                <p>Total Bruto: {{dataInfo[0] + dataInfo[1] | currency:"BRL":true:"1.2"}}</p>
+                <p>Total Líquido: {{dataInfo[0] + dataInfo[2] | currency:"BRL":true:"1.2"}}</p>
+            </ion-card-content>
         </ion-card>
-      
-      </ion-content>
+
+    </ion-content>
 </ng-container>
 <ng-template #elseTemplate>
-  <p>Preencha os dados na primeira Tab!</p>
+    <p>Preencha os dados na primeira Tab!</p>
 </ng-template>
