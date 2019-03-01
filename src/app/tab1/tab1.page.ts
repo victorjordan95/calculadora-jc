@@ -16,6 +16,8 @@ export class Tab1Page {
     public valorNovo = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
+    public menorIR;
+    public rendaMensal = 0;
 
     constructor(private tabService: TabsService, private router: Router) { }
 
@@ -27,6 +29,9 @@ export class Tab1Page {
                     this.valorNovo = f.value.parcelas + (f.value.parcelas * (this.taxa / 12))
                 } else {
                     this.valorNovo = this.valorNovo + (this.valorNovo * (this.taxa / 12))
+                    if (j===0){
+                        this.rendaMensal = this.valorNovo - f.value.parcelas
+                    }
                 }
             }
 
@@ -56,14 +61,24 @@ export class Tab1Page {
                 this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.15)
             }
 
+            if (f.value.tempo-i < 6 && i===0){
+                this.menorIR = "22.5%";
+            } else if (f.value.tempo-i < 12 && i===0) {
+                this.menorIR = "20%";
+            } else if (f.value.tempo-i < 24 && i===0) {
+                this.menorIR = "17.5%";
+            } else if (f.value.tempo-i >= 24 && i===0){
+                this.menorIR = "15%";
+            }
+
             await Promise.resolve(i);
         }
     }
 
     private async showResult(f) {
         for (let i = 0; i < f.value.tempo; i++) {
-            this.valorFinalComIR = parseInt((this.valorFinalComIR).toFixed(4)) + parseInt(this.matrizComIR[i]);
-            this.valorFinalSemIR = parseInt((this.valorFinalSemIR).toFixed(4)) + parseInt(this.matrizSemIR[i]);
+            this.valorFinalComIR = this.valorFinalComIR + this.matrizComIR[i];
+            this.valorFinalSemIR = this.valorFinalSemIR + this.matrizSemIR[i];
 
             await Promise.resolve(i);
         }
@@ -83,7 +98,7 @@ export class Tab1Page {
                     const totalInvestido = f.value.parcelas * f.value.tempo;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
-                    this.tabService.setData([totalInvestido, totalLucroBruto,totalLucroLiquido]);
+                    this.tabService.setData([totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal]);
                     this.router.navigateByUrl('/tabs/tab2');
                     
                 })

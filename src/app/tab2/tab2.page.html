@@ -15,9 +15,12 @@
             </ion-card-header>
 
             <ion-card-content>
-                Investimento Total: {{dataInfo[0] | currency:"BRL":true:"1.2"}}
-                <p>Total Bruto: {{dataInfo[0] + dataInfo[1] | currency:"BRL":true:"1.2"}}</p>
-                <p>Total Líquido: {{dataInfo[0] + dataInfo[2] | currency:"BRL":true:"1.2"}}</p>
+                <p>Renda Total: {{dataInfo[0] + dataInfo[1] | currency:"BRL":true:"1.2"}}</p>
+                <p>Total Aplicado: {{dataInfo[0] | currency:"BRL":true:"1.2"}}</p>
+                <p>Lucro - Juros Composto: {{dataInfo[1] | currency:"BRL":true:"1.2"}}</p>
+                <p>Menor Imposto de Renda Atribuído (1° Parcela): {{dataInfo[3]}}</p>
+                <p>Renda Último Mês: {{dataInfo[4] | currency:"BRL":true:"1.2"}}</p>
+                <p>Renda Total com Imposto de Renda: {{dataInfo[0] + dataInfo[2] | currency:"BRL":true:"1.2"}}</p>
             </ion-card-content>
         </ion-card>
 
