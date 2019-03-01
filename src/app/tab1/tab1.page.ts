@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 })
 export class Tab1Page {
 
-    public taxa = 6.52;
+    public taxa = 6.52; // Atual Selic (01/03/2019)
     public matrizSemIR = [];
     public matrizComIR = [];
     public rendaMensal = 0;
@@ -21,11 +21,14 @@ export class Tab1Page {
     constructor(private tabService: TabsService, private router: Router) { }
 
     private async test(f) {
+        // Encontro a taxa mensal em base da anual.
         const taxaMensal = (this.taxa / 100)/12;
 
+        // Crio cada parcela de aplicação
         for (let j = 0; j < f.value.tempo; j++) {
             let valorNovo = 0;
 
+            // Encontro o juros de cada parcela por seus meses de aplicação
             for (let i = 1; i < f.value.tempo - j; i++) {
                 i===1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
           
@@ -34,6 +37,7 @@ export class Tab1Page {
                 }
             }
 
+            // Inserção de parcelas separadas em uma matriz
             j === f.value.tempo - 1 ? this.matrizSemIR[j] = f.value.parcelas : this.matrizSemIR[j] = valorNovo;
 
             await Promise.resolve(j);
@@ -42,6 +46,8 @@ export class Tab1Page {
 
     private async calc2(f) {
         
+        // Adicionando imposto de renda para cada parcela individual
+        // Encontrando o menor IR
         for (let i=0;i<f.value.tempo;i++){
 
             if (f.value.tempo-i < 6){
@@ -69,6 +75,7 @@ export class Tab1Page {
     }
 
     private async showResult(f) {
+        // Soma das parcelas
         this.matrizComIR.forEach(element => this.valorFinalComIR += element);
         this.matrizSemIR.forEach(element => this.valorFinalSemIR += element);
     }
