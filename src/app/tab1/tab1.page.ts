@@ -10,38 +10,31 @@ import { Router } from '@angular/router';
 })
 export class Tab1Page {
 
-    public taxa = 0.0652;
+    public taxa = 6.52;
     public matrizSemIR = [];
     public matrizComIR = [];
-    public valorNovo = 0;
+    public rendaMensal = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
-    public rendaMensal = 0;
 
     constructor(private tabService: TabsService, private router: Router) { }
 
     private async test(f) {
+        const taxaMensal = (this.taxa / 100)/12;
+
         for (let j = 0; j < f.value.tempo; j++) {
+            let valorNovo = 0;
 
             for (let i = 1; i < f.value.tempo - j; i++) {
-                if (i === 1) {
-                    this.valorNovo = f.value.parcelas + (f.value.parcelas * (this.taxa / 12))
-                } else {
-                    this.valorNovo = this.valorNovo + (this.valorNovo * (this.taxa / 12))
-                    if (j===0){
-                        this.rendaMensal = this.valorNovo - f.value.parcelas
-                    }
+                i===1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+          
+                if (j===0 && i=== f.value.tempo-1){
+                    this.rendaMensal = valorNovo - f.value.parcelas;
                 }
             }
 
-
-            if (j === f.value.tempo - 1) {
-                this.valorNovo = f.value.parcelas
-            }
-
-            this.matrizSemIR[j] = this.valorNovo
-            this.valorNovo = 0
+            j === f.value.tempo - 1 ? this.matrizSemIR[j] = f.value.parcelas : this.matrizSemIR[j] = valorNovo;
 
             await Promise.resolve(j);
         }
@@ -52,13 +45,13 @@ export class Tab1Page {
         for (let i=0;i<f.value.tempo;i++){
 
             if (f.value.tempo-i < 6){
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.225)
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.225);
             } else if (f.value.tempo-i < 12) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.2)
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.2);
             } else if (f.value.tempo-i < 24) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.175)
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.175);
             } else {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.15)
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.15);
             }
 
             if (f.value.tempo-i < 6 && i===0){
@@ -76,17 +69,12 @@ export class Tab1Page {
     }
 
     private async showResult(f) {
-        for (let i = 0; i < f.value.tempo; i++) {
-            this.valorFinalComIR = this.valorFinalComIR + this.matrizComIR[i];
-            this.valorFinalSemIR = this.valorFinalSemIR + this.matrizSemIR[i];
-
-            await Promise.resolve(i);
-        }
-
+        this.matrizComIR.forEach(element => this.valorFinalComIR += element);
+        this.matrizSemIR.forEach(element => this.valorFinalSemIR += element);
     }
 
     onSubmit(f: NgForm) {
-        f.value.parcelas = parseInt(f.value.parcelas, 10);
+        f.value.parcelas = parseFloat(f.value.parcelas);
         f.value.tempo = parseInt(f.value.tempo, 10);
 
 
@@ -100,12 +88,8 @@ export class Tab1Page {
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
                     this.tabService.setData([totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal]);
                     this.router.navigateByUrl('/tabs/tab2');
-                    
                 })
-                
             })
         });
-
     }
-
 }

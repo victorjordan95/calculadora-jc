@@ -14,7 +14,6 @@ export class Tab2Page  implements OnInit {
 
   ngOnInit() {
     this.dataInfo = this.tabService.getData();
-    console.log(this.dataInfo);
   }
 
 }
