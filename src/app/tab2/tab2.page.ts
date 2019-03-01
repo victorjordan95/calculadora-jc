@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { TabsService } from '../tabs/tabs.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { TabsService } from '../tabs/tabs.service';
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss'],
 })
-export class Tab2Page  implements OnInit {
+export class Tab2Page  implements OnInit, OnChanges {
 
   public dataInfo;
 
@@ -14,6 +14,10 @@ export class Tab2Page  implements OnInit {
 
   ngOnInit() {
     this.dataInfo = this.tabService.getData();
+  }
+
+  ngOnChanges() {
+    debugger;
   }
 
 }

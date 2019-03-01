@@ -17,10 +17,11 @@ export class Tab1Page {
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
+    public date = new Date();
 
     constructor(private tabService: TabsService, private router: Router) { }
 
-    private async test(f) {
+    private async findTaxAndAddParcel(f) {
         // Encontro a taxa mensal em base da anual.
         const taxaMensal = (this.taxa / 100)/12;
 
@@ -32,7 +33,7 @@ export class Tab1Page {
             for (let i = 1; i < f.value.tempo - j; i++) {
                 i===1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
           
-                if (j===0 && i=== f.value.tempo-1){
+                if ( j===0 && i === f.value.tempo - 1 ){
                     this.rendaMensal = valorNovo - f.value.parcelas;
                 }
             }
@@ -44,11 +45,11 @@ export class Tab1Page {
         }
     }
 
-    private async calc2(f) {
+    private async addIRParcel(f) {
         
         // Adicionando imposto de renda para cada parcela individual
         // Encontrando o menor IR
-        for (let i=0;i<f.value.tempo;i++){
+        for (let i=0; i<f.value.tempo; i++){
 
             if (f.value.tempo-i < 6){
                 this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.225);
@@ -85,16 +86,16 @@ export class Tab1Page {
         f.value.tempo = parseInt(f.value.tempo, 10);
 
 
-        this.test(f).then(() => {
+        this.findTaxAndAddParcel(f).then(() => {
             console.log('for finished, triggering calc2');
-            this.calc2(f).then(() => {
+            this.addIRParcel(f).then(() => {
                 console.log('calc2 finished, triggerind the results')
                 this.showResult(f).then(res => {
                     const totalInvestido = f.value.parcelas * f.value.tempo;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
                     this.tabService.setData([totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal]);
-                    this.router.navigateByUrl('/tabs/tab2');
+                    this.router.navigateByUrl('/simulacao');
                 })
             })
         });
