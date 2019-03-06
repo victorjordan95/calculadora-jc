@@ -9,6 +9,13 @@ export class TabsService {
 
   constructor() { }
 
+  /**
+   * Salva os valores calculados para
+   * serem usados na pagina de simulação
+   * @param nome nome do investimento
+   * @param data conteudo do investimento
+   * TODO Alterar o filter para uma linha
+   */
   setData(nome, data) {
     if (this.dataInfo.length) {
       this.dataInfo = this.dataInfo.filter(el => {
