@@ -1,9 +1,50 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Tab Three
-    </ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>
+            Simulação de Investimento
+        </ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content color="shade">
+    <ion-card color="light">
+        <ion-card-header>
+            <ion-card-subtitle>NuConta</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+            <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+                <ion-item color="light">
+                    <ion-label position="stacked">Investimento Mensal</ion-label>
+                    <ion-input 
+                        placeholder="Investimento mensal" 
+                        type="tel" 
+                        [(ngModel)]="parcelas"
+                        name="parcelas">
+                    </ion-input>
+                </ion-item>
+                <ion-item color="light">
+                    <ion-label position="stacked">Tempo Investindo (Meses)</ion-label>
+                    <ion-input 
+                        placeholder="Tempo investindo" 
+                        type="tel" 
+                        [(ngModel)]="tempo"
+                        name="tempo">
+                    </ion-input>
+                </ion-item>
+                <div class="taxa">
+                    <p>
+                        Taxa Anual
+                        <small>
+                            ({{date.getDate()}}/{{date.getMonth()+1}}/{{date.getFullYear()}})
+                        </small>
+                    </p>
+                    <p>
+                        {{taxa}}
+                    </p>
+                </div>
+                <ion-button type="submit" color="primary" class="btn-full">Simular!</ion-button>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

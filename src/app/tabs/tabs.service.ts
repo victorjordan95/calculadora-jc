@@ -5,12 +5,17 @@ import { Injectable } from '@angular/core';
 })
 export class TabsService {
 
-  public dataInfo;
+  public dataInfo = [];
 
   constructor() { }
 
-  setData(data) {
-    this.dataInfo = data;
+  setData(nome, data) {
+    if (this.dataInfo.length) {
+      this.dataInfo = this.dataInfo.filter(el => {
+        return el[6] !== nome;
+      });
+    }
+    this.dataInfo.push(data);
   }
 
   getData() {

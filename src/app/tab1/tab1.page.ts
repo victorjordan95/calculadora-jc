@@ -23,7 +23,7 @@ export class Tab1Page {
 
     private async findTaxAndAddParcel(f) {
         // Encontro a taxa mensal em base da anual.
-        const taxaMensal = (this.taxa / 100)/12;
+        const taxaMensal = (this.taxa / 100) / 12;
 
         // Crio cada parcela de aplicação
         for (let j = 0; j < f.value.tempo; j++) {
@@ -31,9 +31,9 @@ export class Tab1Page {
 
             // Encontro o juros de cada parcela por seus meses de aplicação
             for (let i = 1; i < f.value.tempo - j; i++) {
-                i===1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
-          
-                if ( j===0 && i === f.value.tempo - 1 ){
+                i === 1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+
+                if (j === 0 && i === f.value.tempo - 1) {
                     this.rendaMensal = valorNovo - f.value.parcelas;
                 }
             }
@@ -46,37 +46,39 @@ export class Tab1Page {
     }
 
     private async addIRParcel(f) {
-        
         // Adicionando imposto de renda para cada parcela individual
         // Encontrando o menor IR
-        for (let i=0; i<f.value.tempo; i++){
+        for (let i = 0; i < f.value.tempo; i++) {
 
-            if (f.value.tempo-i < 6){
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.225);
-            } else if (f.value.tempo-i < 12) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.2);
-            } else if (f.value.tempo-i < 24) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.175);
+            if (f.value.tempo - i < 6) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.225);
+            } else if (f.value.tempo - i < 12) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.2);
+            } else if (f.value.tempo - i < 24) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.175);
             } else {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i]-f.value.parcelas) * 0.15);
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.15);
             }
 
-            if (f.value.tempo-i < 6 && i===0){
-                this.menorIR = "22.5%";
-            } else if (f.value.tempo-i < 12 && i===0) {
-                this.menorIR = "20%";
-            } else if (f.value.tempo-i < 24 && i===0) {
-                this.menorIR = "17.5%";
-            } else if (f.value.tempo-i >= 24 && i===0){
-                this.menorIR = "15%";
+            if (f.value.tempo - i < 6 && i === 0) {
+                this.menorIR = '22.5%';
+            } else if (f.value.tempo - i < 12 && i === 0) {
+                this.menorIR = '20%';
+            } else if (f.value.tempo - i < 24 && i === 0) {
+                this.menorIR = '17.5%';
+            } else if (f.value.tempo - i >= 24 && i === 0) {
+                this.menorIR = '15%';
             }
 
             await Promise.resolve(i);
         }
     }
 
-    private async showResult(f) {
-        // Soma das parcelas
+    /**
+     * Soma todas as parcelas
+     * com e sem Imposto de Renda
+     */
+    private async sumParcels() {
         this.matrizComIR.forEach(element => this.valorFinalComIR += element);
         this.matrizSemIR.forEach(element => this.valorFinalSemIR += element);
     }
@@ -87,14 +89,12 @@ export class Tab1Page {
 
 
         this.findTaxAndAddParcel(f).then(() => {
-            console.log('for finished, triggering calc2');
             this.addIRParcel(f).then(() => {
-                console.log('calc2 finished, triggerind the results')
-                this.showResult(f).then(res => {
+                this.sumParcels().then(res => {
                     const totalInvestido = f.value.parcelas * f.value.tempo;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
-                    this.tabService.setData([totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal]);
+                    this.tabService.setData('selic', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'Taxa Selic', 'selic']);
                     this.router.navigateByUrl('/simulacao');
                 })
             })

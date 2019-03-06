@@ -16,6 +16,7 @@ export class Tab3Page {
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
+    public date = new Date();
 
     constructor(private tabService: TabsService, private router: Router) { }
 
@@ -27,7 +28,9 @@ export class Tab3Page {
             const taxaIOF = 0.000082 * 30;
 
             for (let i = 1; i < f.value.tempo - j; i++) {
-                i === 1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) - (f.value.parcelas * taxaIOF) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+                i === 1 ?
+                    valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) - (f.value.parcelas * taxaIOF) :
+                    valorNovo = valorNovo + (valorNovo * taxaMensal);
 
                 if (j === 0 && i === f.value.tempo - 1) {
                     this.rendaMensal = valorNovo - f.value.parcelas;
@@ -55,20 +58,20 @@ export class Tab3Page {
             }
 
             if (f.value.tempo - i < 6 && i === 0) {
-                this.menorIR = "22.5%";
+                this.menorIR = '22.5%';
             } else if (f.value.tempo - i < 12 && i === 0) {
-                this.menorIR = "20%";
+                this.menorIR = '20%';
             } else if (f.value.tempo - i < 24 && i === 0) {
-                this.menorIR = "17.5%";
+                this.menorIR = '17.5%';
             } else if (f.value.tempo - i >= 24 && i === 0) {
-                this.menorIR = "15%";
+                this.menorIR = '15%';
             }
 
             await Promise.resolve(i);
         }
     }
 
-    private async showResult(f) {
+    private async sumParcels() {
         this.matrizComIR.forEach(element => this.valorFinalComIR += element);
         this.matrizSemIR.forEach(element => this.valorFinalSemIR += element);
     }
@@ -82,14 +85,14 @@ export class Tab3Page {
             console.log('for finished, triggering calc2');
             this.calc2(f).then(() => {
                 console.log('calc2 finished, triggerind the results')
-                this.showResult(f).then(res => {
+                this.sumParcels().then(res => {
                     const totalInvestido = f.value.parcelas * f.value.tempo;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
-                    this.tabService.setData([totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal]);
-                    // this.router.navigateByUrl('/tabs/tab2');
-                })
-            })
+                    this.tabService.setData('nuconta', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'NuConta', 'nuconta']);
+                    this.router.navigateByUrl('/simulacao');
+                });
+            });
         });
     }
 }

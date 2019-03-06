@@ -10,18 +10,18 @@
 <ng-container *ngIf="dataInfo; else elseTemplate">
     <ion-content>
 
-        <ion-card>
+        <ion-card *ngFor="let investimento of dataInfo; let i=index" [ngClass]="dataInfo[i][6]">
             <ion-card-header>
-                <ion-card-subtitle><strong>Tesouro Selic</strong></ion-card-subtitle>
+                <ion-card-subtitle><strong>{{dataInfo[i][5]}}</strong></ion-card-subtitle>
             </ion-card-header>
 
-            <ion-card-content>
-                <p>Renda Total: <strong>{{dataInfo[0] + dataInfo[1] | currency:"BRL":true:"1.2"}}</strong></p>
-                <p>Total Aplicado: <strong>{{dataInfo[0] | currency:"BRL":true:"1.2"}}</strong></p>
-                <p>Lucro - Juros Composto: <strong>{{dataInfo[1] | currency:"BRL":true:"1.2"}}</strong></p>
-                <p>Menor Imposto de Renda Atribuído (1° Parcela): <strong>{{dataInfo[3]}}</strong></p>
-                <p>Renda Último Mês: <strong>{{dataInfo[4] | currency:"BRL":true:"1.2"}}</strong></p>
-                <p>Renda Total com Imposto de Renda: <strong>{{dataInfo[0] + dataInfo[2] | currency:"BRL":true:"1.2"}}</strong></p>
+            <ion-card-content >
+                <p>Renda Total: <strong>{{dataInfo[i][0] + dataInfo[i][1] | currency:'BRL':'symbol':'1.2'}}</strong></p>
+                <p>Total Aplicado: <strong>{{dataInfo[i][0] | currency:'BRL':'symbol':'1.2'}}</strong></p>
+                <p>Lucro - Juros Composto: <strong>{{dataInfo[i][1] | currency:'BRL':'symbol':'1.2'}}</strong></p>
+                <p>Menor Imposto de Renda Atribuído (1° Parcela): <strong>{{dataInfo[i][3]}}</strong></p>
+                <p>Renda Último Mês: <strong>{{dataInfo[i][4] | currency:'BRL':'symbol':'1.2'}}</strong></p>
+                <p>Renda Total com Imposto de Renda: <strong>{{dataInfo[i][0] + dataInfo[i][2] | currency:'BRL':'symbol':'1.2'}}</strong></p>
             </ion-card-content>
         </ion-card>
 

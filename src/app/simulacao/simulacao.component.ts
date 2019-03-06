@@ -9,9 +9,9 @@ import { Router, NavigationStart  } from '@angular/router';
 })
 export class SimulacaoComponent implements OnInit {
 
-    public dataInfo;
+    public dataInfo: any;
 
-    constructor(private tabService: TabsService, private router: Router) { 
+    constructor(private tabService: TabsService, private router: Router) {
 
         router.events.subscribe(event => {
             if (event instanceof NavigationStart) {
@@ -31,6 +31,7 @@ export class SimulacaoComponent implements OnInit {
 
     getSimulationData() {
         this.dataInfo = this.tabService.getData();
+        console.log(this.dataInfo);
     }
 
 }
