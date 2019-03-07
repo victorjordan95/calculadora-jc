@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class TabsService {
 
-  public dataInfo = [];
+  private dataInfo = [];
 
   constructor() { }
 
@@ -13,18 +13,19 @@ export class TabsService {
    * Salva os valores calculados para
    * serem usados na pagina de simulação
    * @param nome nome do investimento
-   * @param data conteudo do investimento
-   * TODO Alterar o filter para uma linha
+   * @param data conteúdo do investimento
    */
   setData(nome, data) {
     if (this.dataInfo.length) {
-      this.dataInfo = this.dataInfo.filter(el => {
-        return el[6] !== nome;
-      });
+      this.dataInfo = this.dataInfo.filter(el => el[6] !== nome );
     }
     this.dataInfo.push(data);
   }
 
+  /**
+   * Retorna os valores
+   * salvos pela simulação
+   */
   getData() {
     return this.dataInfo;
   }

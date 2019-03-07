@@ -82,15 +82,18 @@ export class Tab3Page {
 
 
         this.test(f).then(() => {
-            console.log('for finished, triggering calc2');
             this.calc2(f).then(() => {
-                console.log('calc2 finished, triggerind the results')
                 this.sumParcels().then(res => {
                     const totalInvestido = f.value.parcelas * f.value.tempo;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
                     this.tabService.setData('nuconta', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'NuConta', 'nuconta']);
                     this.router.navigateByUrl('/simulacao');
+                    this.menorIR = undefined;
+                    this.rendaMensal = 0;
+                    this.valorFinalComIR = 0;
+                    this.valorFinalSemIR = 0;
+                    f.resetForm();
                 });
             });
         });

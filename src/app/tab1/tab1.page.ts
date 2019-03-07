@@ -22,6 +22,8 @@ export class Tab1Page {
     constructor(private tabService: TabsService, private router: Router) { }
 
     private async findTaxAndAddParcel(f) {
+        this.rendaMensal = 0;
+
         // Encontro a taxa mensal em base da anual.
         const taxaMensal = (this.taxa / 100) / 12;
 
@@ -96,6 +98,11 @@ export class Tab1Page {
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
                     this.tabService.setData('selic', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'Taxa Selic', 'selic']);
                     this.router.navigateByUrl('/simulacao');
+                    this.rendaMensal = 0;
+                    this.valorFinalComIR = 0;
+                    this.valorFinalSemIR = 0;
+                    this.menorIR = undefined;
+                    f.resetForm();
                 })
             })
         });
