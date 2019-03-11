@@ -15,8 +15,13 @@
         <ion-card-content>
             <form (ngSubmit)="onSubmit(f)" #f="ngForm">
                 <ion-item color="light">
+                    <ion-label position="stacked">Capital Inicial</ion-label>
+                    <ion-toggle color="primary" (ionChange)="updateField()"></ion-toggle>
+                    <ion-input disabled="{{isDisabled}}" placeholder="Investimento Inicial" type="tel" [(ngModel)]="capital" name="capital"></ion-input>
+                </ion-item>
+                <ion-item color="light">
                     <ion-label position="stacked">Investimento Mensal</ion-label>
-                    <ion-input placeholder="Quanto pretende investir mensalmente?" type="tel" [(ngModel)]="parcelas" name="parcelas"></ion-input>
+                    <ion-input placeholder="Investimento Mensal" type="tel" [(ngModel)]="parcelas" name="parcelas"></ion-input>
                 </ion-item>
                 <!-- <ion-item>
                     <ion-label position="stacked">Taxa Imposto de Renda</ion-label>
@@ -24,7 +29,7 @@
                 </ion-item> -->
                 <ion-item color="light">
                     <ion-label position="stacked">Tempo Investindo (Meses)</ion-label>
-                    <ion-input placeholder="Por quanto tempo quer investir esse valor? Em meses" type="tel" [(ngModel)]="tempo" name="tempo"></ion-input>
+                    <ion-input placeholder="Tempo de Investimento" type="tel" [(ngModel)]="tempo" name="tempo"></ion-input>
                 </ion-item>
                 <div class="taxa">
                     <p>
