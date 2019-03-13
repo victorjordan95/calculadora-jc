@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TabsService } from '../tabs/tabs.service';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-tab3',
     templateUrl: 'tab3.page.html',
     styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page {
-    public taxa = 6.4; // Atual CDI (01/03/2019)
+export class Tab3Page implements OnInit {
+    public taxa;
+    public subscription: Subscription;
     public matrizSemIR = [];
     public matrizComIR = [];
     public rendaMensal = 0;
@@ -18,7 +20,18 @@ export class Tab3Page {
     public menorIR;
     public date = new Date();
 
-    constructor(private tabService: TabsService, private router: Router) { }
+    constructor(private tabService: TabsService, private router: Router) {
+        router.events.subscribe(event => {
+            if (event instanceof NavigationStart) {
+                this.getTax();
+            }
+        });
+    }
+
+    ngOnInit() {
+        this.getTax();
+    }
+
 
     private async test(f) {
         const taxaMensal = (this.taxa / 100) / 12;
@@ -76,6 +89,12 @@ export class Tab3Page {
         this.matrizSemIR.forEach(element => this.valorFinalSemIR += element);
     }
 
+    /**
+      * Get the values received and calculate;
+      * Send the user to 'simulacao' page and
+      * reset the form values;
+      * @param f form Received data from form
+      */
     onSubmit(f: NgForm) {
         f.value.parcelas = parseFloat(f.value.parcelas);
         f.value.tempo = parseInt(f.value.tempo, 10);
@@ -97,5 +116,27 @@ export class Tab3Page {
                 });
             });
         });
+    }
+
+    /**
+     * Check if the Tax is already
+     * defined, if so, use this value
+     * else, get the tax from Service
+     * and set the received values
+     */
+    getTax(): void {
+        const tax = sessionStorage.getItem('cdi');
+        if (tax) {
+            this.taxa = tax;
+        } else {
+            this.tabService.getTax().subscribe(
+                (res: any) => {
+                    this.taxa = res.results[0].selic;
+                    sessionStorage.setItem('cdi', res.results[0].cdi);
+                    sessionStorage.setItem('selic', res.results[0].selic);
+                },
+                err => console.log(err)
+            );
+        }
     }
 }
