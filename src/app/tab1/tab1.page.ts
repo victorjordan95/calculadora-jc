@@ -154,14 +154,15 @@ export class Tab1Page implements OnInit {
         });
     }
 
-<<<<<<< HEAD
+    /**
+     * Update capital Field by checkbox
+     */
     updateField() {
         this.isDisabled = !this.isDisabled;
         if (this.isDisabled === false) {
             this.capitalInicial = undefined;
         }
     }
-=======
     /**
      * Check if the Tax is already
      * defined, if so, use this value
@@ -185,5 +186,4 @@ export class Tab1Page implements OnInit {
 
     }
 
->>>>>>> d3911b5bcbf22ffd7cb37d90fa9ae16243671d61
 }
