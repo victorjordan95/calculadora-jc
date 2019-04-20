@@ -15,6 +15,7 @@ export class Tab1Page implements OnInit {
     public matrizSemIR = [];
     public matrizComIR = [];
     public rendaMensal = 0;
+    public lucroPParcela = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
@@ -40,6 +41,7 @@ export class Tab1Page implements OnInit {
 
     private async findTaxAndAddParcel() {
         this.rendaMensal = 0;
+        this.lucroPParcela = 0;
 
         // Encontro a taxa mensal em base da anual.
         const taxaMensal = (this.taxa / 100) / 12;
@@ -53,10 +55,17 @@ export class Tab1Page implements OnInit {
 
                 // Juros Composto para casos com capital inicial
                 for (let i = 1; i < this.meses - j; i++) {
-                    i === 1 ? valorNovo = this.capitalInicial + (this.capitalInicial * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+
+                    if (i===this.meses-1){
+                        this.rendaMensal = this.rendaMensal + (valorNovo * taxaMensal);
+                    }
+
+                    i === 1 ? 
+                        valorNovo = this.capitalInicial + (this.capitalInicial * taxaMensal) : 
+                        valorNovo = valorNovo + (valorNovo * taxaMensal);
 
                     if (j === 0 && i === this.meses - 1) {
-                        this.rendaMensal = valorNovo - this.capitalInicial;
+                        this.lucroPParcela = valorNovo - this.capitalInicial;
                     }
                 }
 
@@ -64,10 +73,17 @@ export class Tab1Page implements OnInit {
                 
                 // Juros Composto para casos sem capital inicial
                 for (let i = 1; i < this.meses - j; i++) {
-                    i === 1 ? valorNovo = this.capitalMensal + (this.capitalMensal * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+
+                    if (i===this.meses-1){
+                        this.rendaMensal = this.rendaMensal + (valorNovo * taxaMensal);
+                    }
+
+                    i === 1 ? 
+                        valorNovo = this.capitalMensal + (this.capitalMensal * taxaMensal) : 
+                        valorNovo = valorNovo + (valorNovo * taxaMensal);
 
                     if (j === 0 && i === this.meses - 1) {
-                        this.rendaMensal = valorNovo - this.capitalMensal;
+                        this.lucroPParcela = valorNovo - this.capitalMensal;
                     }
                 }
             }

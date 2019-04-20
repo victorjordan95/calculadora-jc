@@ -15,6 +15,7 @@ export class Tab3Page implements OnInit {
     public matrizSemIR = [];
     public matrizComIR = [];
     public rendaMensal = 0;
+    public lucroPParcela = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
@@ -41,12 +42,17 @@ export class Tab3Page implements OnInit {
             const taxaIOF = 0.000082 * 30;
 
             for (let i = 1; i < f.value.tempo - j; i++) {
+
+                if (i===f.value.tempo-1){
+                    this.rendaMensal = this.rendaMensal + (valorNovo * taxaMensal);
+                }
+
                 i === 1 ?
                     valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) - (f.value.parcelas * taxaIOF) :
                     valorNovo = valorNovo + (valorNovo * taxaMensal);
 
                 if (j === 0 && i === f.value.tempo - 1) {
-                    this.rendaMensal = valorNovo - f.value.parcelas;
+                    this.lucroPParcela = valorNovo - f.value.parcelas;
                 }
             }
 
