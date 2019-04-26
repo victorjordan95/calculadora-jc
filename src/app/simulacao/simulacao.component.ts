@@ -31,6 +31,7 @@ export class SimulacaoComponent implements OnInit {
 
     getSimulationData() {
         this.dataInfo = this.tabService.getData();
+        console.log(this.dataInfo);
     }
 
 }

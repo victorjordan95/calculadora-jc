@@ -15,10 +15,15 @@ export class Tab1Page implements OnInit {
     public matrizSemIR = [];
     public matrizComIR = [];
     public rendaMensal = 0;
+    public lucroPParcela = 0;
     public valorFinalComIR = 0;
     public valorFinalSemIR = 0;
     public menorIR;
     public date = new Date();
+    public isDisabled: boolean=true;
+    public capitalInicial = 0;
+    public meses;
+    public capitalMensal;
 
     public subscription: Subscription;
 
@@ -34,54 +39,84 @@ export class Tab1Page implements OnInit {
         this.getTax();
     }
 
-    private async findTaxAndAddParcel(f) {
+    private async findTaxAndAddParcel() {
         this.rendaMensal = 0;
+        this.lucroPParcela = 0;
 
         // Encontro a taxa mensal em base da anual.
         const taxaMensal = (this.taxa / 100) / 12;
 
         // Crio cada parcela de aplicação
-        for (let j = 0; j < f.value.tempo; j++) {
+        for (let j = 0; j < this.meses; j++) {
             let valorNovo = 0;
 
             // Encontro o juros de cada parcela por seus meses de aplicação
-            for (let i = 1; i < f.value.tempo - j; i++) {
-                i === 1 ? valorNovo = f.value.parcelas + (f.value.parcelas * taxaMensal) : valorNovo = valorNovo + (valorNovo * taxaMensal);
+            if (this.isDisabled === false && j === 0){
 
-                if (j === 0 && i === f.value.tempo - 1) {
-                    this.rendaMensal = valorNovo - f.value.parcelas;
+                // Juros Composto para casos com capital inicial
+                for (let i = 1; i < this.meses - j; i++) {
+
+                    if (i===this.meses-1){
+                        this.rendaMensal = this.rendaMensal + (valorNovo * taxaMensal);
+                    }
+
+                    i === 1 ? 
+                        valorNovo = this.capitalInicial + (this.capitalInicial * taxaMensal) : 
+                        valorNovo = valorNovo + (valorNovo * taxaMensal);
+
+                    if (j === 0 && i === this.meses - 1) {
+                        this.lucroPParcela = valorNovo - this.capitalInicial;
+                    }
+                }
+
+            } else {
+                
+                // Juros Composto para casos sem capital inicial
+                for (let i = 1; i < this.meses - j; i++) {
+
+                    if (i===this.meses-1){
+                        this.rendaMensal = this.rendaMensal + (valorNovo * taxaMensal);
+                    }
+
+                    i === 1 ? 
+                        valorNovo = this.capitalMensal + (this.capitalMensal * taxaMensal) : 
+                        valorNovo = valorNovo + (valorNovo * taxaMensal);
+
+                    if (j === 0 && i === this.meses - 1) {
+                        this.lucroPParcela = valorNovo - this.capitalMensal;
+                    }
                 }
             }
 
             // Inserção de parcelas separadas em uma matriz
-            j === f.value.tempo - 1 ? this.matrizSemIR[j] = f.value.parcelas : this.matrizSemIR[j] = valorNovo;
+            j === this.meses - 1 ? this.matrizSemIR[j] = this.capitalMensal : this.matrizSemIR[j] = valorNovo;
 
             await Promise.resolve(j);
         }
     }
 
-    private async addIRParcel(f) {
+    private async addIRParcel() {
         // Adicionando imposto de renda para cada parcela individual
         // Encontrando o menor IR
-        for (let i = 0; i < f.value.tempo; i++) {
+        for (let i = 0; i < this.meses; i++) {
 
-            if (f.value.tempo - i < 6) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.225);
-            } else if (f.value.tempo - i < 12) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.2);
-            } else if (f.value.tempo - i < 24) {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.175);
+            if (this.meses - i <= 7) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - this.capitalMensal) * 0.225);
+            } else if (this.meses - i <= 13) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - this.capitalMensal) * 0.2);
+            } else if (this.meses - i <= 25) {
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - this.capitalMensal) * 0.175);
             } else {
-                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - f.value.parcelas) * 0.15);
+                this.matrizComIR[i] = this.matrizSemIR[i] - ((this.matrizSemIR[i] - this.capitalMensal) * 0.15);
             }
 
-            if (f.value.tempo - i < 6 && i === 0) {
+            if (this.meses - i <= 7 && i === 0) {
                 this.menorIR = '22.5%';
-            } else if (f.value.tempo - i < 12 && i === 0) {
+            } else if (this.meses - i <= 13 && i === 0) {
                 this.menorIR = '20%';
-            } else if (f.value.tempo - i < 24 && i === 0) {
+            } else if (this.meses - i <= 25 && i === 0) {
                 this.menorIR = '17.5%';
-            } else if (f.value.tempo - i >= 24 && i === 0) {
+            } else if (this.meses - i > 25 && i === 0) {
                 this.menorIR = '15%';
             }
 
@@ -105,17 +140,25 @@ export class Tab1Page implements OnInit {
      * @param f any Received data from form
      */
     onSubmit(f: NgForm) {
-        f.value.parcelas = parseFloat(f.value.parcelas);
-        f.value.tempo = parseInt(f.value.tempo, 10);
+        this.capitalMensal = parseFloat(f.value.parcelas);
+
+        if (this.isDisabled === true) 
+        {
+            this.meses = parseInt(f.value.tempo, 10);
+        } else {
+            this.meses = parseInt(f.value.tempo, 10) + 1;
+            this.capitalInicial = parseFloat(f.value.capital);
+        }
 
 
-        this.findTaxAndAddParcel(f).then(() => {
-            this.addIRParcel(f).then(() => {
+        this.findTaxAndAddParcel().then(() => {
+            this.addIRParcel().then(() => {
                 this.sumParcels().then(res => {
-                    const totalInvestido = f.value.parcelas * f.value.tempo;
+                    const totalInvestido = (this.capitalMensal * parseInt(f.value.tempo, 10)) + this.capitalInicial;
                     const totalLucroBruto = this.valorFinalSemIR - totalInvestido;
                     const totalLucroLiquido = this.valorFinalComIR - totalInvestido;
-                    this.tabService.setData('selic', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'Taxa Selic', 'selic']);
+                    const diasInvestidos = this.meses * 30;
+                    this.tabService.setData('selic', [totalInvestido, totalLucroBruto, totalLucroLiquido, this.menorIR, this.rendaMensal, 'Taxa Selic', 'selic', diasInvestidos]);
                     this.router.navigateByUrl('/simulacao');
                     this.rendaMensal = 0;
                     this.valorFinalComIR = 0;
@@ -127,6 +170,15 @@ export class Tab1Page implements OnInit {
         });
     }
 
+    /**
+     * Update capital Field by checkbox
+     */
+    updateField() {
+        this.isDisabled = !this.isDisabled;
+        if (this.isDisabled === false) {
+            this.capitalInicial = undefined;
+        }
+    }
     /**
      * Check if the Tax is already
      * defined, if so, use this value
